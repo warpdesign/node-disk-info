@@ -1,4 +1,4 @@
-import {getDiskInfo, getDiskInfoSync} from '../src';
+import {getDiskInfo} from '../src';
 import {Utils} from '../src/utils/utils';
 import * as os from 'os';
 
@@ -20,7 +20,7 @@ describe('node-disk-info-openbsd', () => {
     beforeAll(() => {
         if (os.platform() !== 'openbsd') {
             spyOn(Utils, 'detectPlatform').and.callFake(() => 'openbsd');
-            spyOn(Utils, 'execute').and.callFake((command: string) => OPENBSD_COMMAND_RESPONSE);
+            spyOn(Utils, 'execute').and.callFake((command: string) => Promise.resolve(OPENBSD_COMMAND_RESPONSE));
         }
     });
 
@@ -68,38 +68,4 @@ describe('node-disk-info-openbsd', () => {
                 done.fail(reason);
             });
     });
-
-    it('should generate disks list info sync for OpenBSD', () => {
-        const values = getDiskInfoSync();
-
-        expect(values).toBeDefined();
-        expect(values.length).toBeGreaterThanOrEqual(0);
-    });
-
-    it('should generate disk info sync for OpenBSD', () => {
-        const values = getDiskInfoSync();
-
-        expect(values.length).toBeGreaterThan(0);
-
-        const disk = values[0];
-
-        expect(disk.filesystem).toBeDefined();
-        expect(typeof disk.filesystem).toEqual('string');
-
-        expect(disk.blocks).toBeDefined();
-        expect(typeof disk.blocks).toEqual('number');
-
-        expect(disk.used).toBeDefined();
-        expect(typeof disk.used).toEqual('number');
-
-        expect(disk.available).toBeDefined();
-        expect(typeof disk.available).toEqual('number');
-
-        expect(disk.capacity).toBeDefined();
-        expect(typeof disk.capacity).toEqual('string');
-
-        expect(disk.mounted).toBeDefined();
-        expect(typeof disk.mounted).toEqual('string');
-    });
-
 });

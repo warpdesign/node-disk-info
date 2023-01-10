@@ -11,12 +11,12 @@ export class Linux {
     /**
      * Execute specific Linux command to get disk info.
      *
-     * @return {Drive[]} List of drives and their info.
+     * @return {Promise<Drive[]>} List of drives and their info.
      */
-    public static run(): Drive[] {
+    public static async run(): Promise<Drive[]> {
 
         const drives: Drive[] = [];
-        const buffer = Utils.execute(Constants.LINUX_COMMAND);
+        const buffer = await Utils.execute(Constants.LINUX_COMMAND);
         const lines = buffer.toString().split('\n');
 
         lines.forEach((value) => {

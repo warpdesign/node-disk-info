@@ -1,4 +1,4 @@
-import {getDiskInfo, getDiskInfoSync} from '../src';
+import {getDiskInfo} from '../src';
 import {Utils} from '../src/utils/utils';
 import * as os from 'os';
 
@@ -32,13 +32,13 @@ describe('node-disk-info-win32', () => {
     beforeAll(() => {
         if (os.platform() !== 'win32') {
             spyOn(Utils, 'detectPlatform').and.callFake(() => 'win32');
-            spyOn(Utils, 'execute').and.callFake(() => WINDOWS_COMMAND_RESPONSE);
+            spyOn(Utils, 'execute').and.callFake(() => Promise.resolve(WINDOWS_COMMAND_RESPONSE));
         }
     });
 
     it('should generate disks list info for Windows', (done) => {
         if (os.platform() !== 'win32') {
-            spyOn(Utils, 'chcp').and.callFake(() => '65001');
+            spyOn(Utils, 'chcp').and.callFake(() => Promise.resolve('65001'));
         }
         getDiskInfo()
             .then(values => {
@@ -54,7 +54,7 @@ describe('node-disk-info-win32', () => {
 
     it('should generate disk info for Windows', (done) => {
         if (os.platform() !== 'win32') {
-            spyOn(Utils, 'chcp').and.callFake(() => '65001');
+            spyOn(Utils, 'chcp').and.callFake(() => Promise.resolve('65001'));
         }
         getDiskInfo()
             .then(values => {
@@ -86,76 +86,4 @@ describe('node-disk-info-win32', () => {
                 done.fail(reason);
             });
     });
-
-    it('should generate disks list info sync for Windows', () => {
-        if (os.platform() !== 'win32') {
-            spyOn(Utils, 'chcp').and.callFake(() => '65001');
-        }
-        const values = getDiskInfoSync();
-
-        expect(values).toBeDefined();
-        expect(values.length).toBeGreaterThanOrEqual(0);
-    });
-
-    it('should generate disk info sync for Windows', () => {
-        if (os.platform() !== 'win32') {
-            spyOn(Utils, 'chcp').and.callFake(() => '65001');
-        }
-        const values = getDiskInfoSync();
-
-        expect(values.length).toBeGreaterThan(0);
-
-        const disk = values[0];
-
-        expect(disk.filesystem).toBeDefined();
-        expect(typeof disk.filesystem).toEqual('string');
-
-        expect(disk.blocks).toBeDefined();
-        expect(typeof disk.blocks).toEqual('number');
-
-        expect(disk.used).toBeDefined();
-        expect(typeof disk.used).toEqual('number');
-
-        expect(disk.available).toBeDefined();
-        expect(typeof disk.available).toEqual('number');
-
-        expect(disk.capacity).toBeDefined();
-        expect(typeof disk.capacity).toEqual('string');
-
-        expect(disk.mounted).toBeDefined();
-        expect(typeof disk.mounted).toEqual('string');
-    });
-
-    it('should generate disks list info sync for Windows chcp 65000', () => {
-        spyOn(Utils, 'chcp').and.callFake(() => '65000');
-        const values = getDiskInfoSync();
-
-        expect(values).toBeDefined();
-        expect(values.length).toBeGreaterThanOrEqual(0);
-    });
-
-    it('should generate disks list info sync for Windows chcp 65001', () => {
-        spyOn(Utils, 'chcp').and.callFake(() => '65001');
-        const values = getDiskInfoSync();
-
-        expect(values).toBeDefined();
-        expect(values.length).toBeGreaterThanOrEqual(0);
-    });
-
-    it('should generate disks list info sync for Windows chcp ascii', () => {
-        spyOn(Utils, 'chcp').and.callFake(() => 'ascii');
-        const values = getDiskInfoSync();
-
-        expect(values).toBeDefined();
-        expect(values.length).toBeGreaterThanOrEqual(0);
-    });
-
-    it('should generate disks list info sync for Windows chcp 1252', () => {
-        spyOn(Utils, 'chcp').and.callFake(() => '1252');
-        const values = getDiskInfoSync();
-
-        expect(values).toBeDefined();
-        expect(values.length).toBeGreaterThanOrEqual(0);
-    });
-
 });
