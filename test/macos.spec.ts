@@ -1,4 +1,4 @@
-import {getDiskInfo, getDiskInfoSync} from '../src';
+import {getDiskInfo} from '../src';
 import {Utils} from '../src/utils/utils';
 import * as os from 'os';
 
@@ -20,7 +20,7 @@ describe('node-disk-info-macos', () => {
     beforeAll(() => {
         if (os.platform() !== 'darwin') {
             spyOn(Utils, 'detectPlatform').and.callFake(() => 'darwin');
-            spyOn(Utils, 'execute').and.callFake((command: string) => DARWIN_COMMAND_RESPONSE);
+            spyOn(Utils, 'execute').and.callFake((command: string) => Promise.resolve(DARWIN_COMMAND_RESPONSE));
         }
     });
 
@@ -68,38 +68,4 @@ describe('node-disk-info-macos', () => {
                 done.fail(reason);
             });
     });
-
-    it('should generate disks list info sync for Mac OS', () => {
-        const values = getDiskInfoSync();
-
-        expect(values).toBeDefined();
-        expect(values.length).toBeGreaterThanOrEqual(0);
-    });
-
-    it('should generate disk info sync for Mac OS', () => {
-        const values = getDiskInfoSync();
-
-        expect(values.length).toBeGreaterThan(0);
-
-        const disk = values[0];
-
-        expect(disk.filesystem).toBeDefined();
-        expect(typeof disk.filesystem).toEqual('string');
-
-        expect(disk.blocks).toBeDefined();
-        expect(typeof disk.blocks).toEqual('number');
-
-        expect(disk.used).toBeDefined();
-        expect(typeof disk.used).toEqual('number');
-
-        expect(disk.available).toBeDefined();
-        expect(typeof disk.available).toEqual('number');
-
-        expect(disk.capacity).toBeDefined();
-        expect(typeof disk.capacity).toEqual('string');
-
-        expect(disk.mounted).toBeDefined();
-        expect(typeof disk.mounted).toEqual('string');
-    });
-
 });

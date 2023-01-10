@@ -12,14 +12,14 @@ export class Windows {
     /**
      * Execute specific Windows command to get disk info.
      *
-     * @return {Drive[]} List of drives and their info.
+     * @return {Promise<Drive[]>} List of drives and their info.
      */
-    public static run(): Drive[] {
+    public static async run(): Promise<Drive[]> {
 
         const drives: Drive[] = [];
-        let buffer = Utils.execute(Constants.WINDOWS_COMMAND);
+        let buffer = await Utils.execute(Constants.WINDOWS_COMMAND);
         
-        const cp = Utils.chcp();
+        const cp = await Utils.chcp();
         let encoding = '';
         switch (cp) {
             case '65000': // UTF-7

@@ -1,5 +1,5 @@
 import {Utils} from '../src/utils/utils';
-import {getDiskInfo, getDiskInfoSync} from '../src';
+import {getDiskInfo} from '../src';
 
 describe('node-disk-info-android', () => {
 
@@ -28,11 +28,5 @@ describe('node-disk-info-android', () => {
             .catch(reason => {
                 done();
             });
-    });
-
-    it('should not generate disks list info sync for unsupported so', () => {
-        spyOn(Utils, 'detectPlatform').and.callFake(() => 'android');
-
-        expect(() => getDiskInfoSync()).toThrowError('Platform not supported: android');
     });
 });

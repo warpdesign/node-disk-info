@@ -1,5 +1,5 @@
 import {Utils} from '../src/utils/utils';
-import {getDiskInfo, getDiskInfoSync} from '../src';
+import {getDiskInfo} from '../src';
 
 describe('node-disk-info-aix', () => {
 
@@ -28,11 +28,5 @@ describe('node-disk-info-aix', () => {
             .catch(reason => {
                 done();
             });
-    });
-
-    it('should not generate disks list info sync for unsupported so', () => {
-        spyOn(Utils, 'detectPlatform').and.callFake(() => 'aix');
-
-        expect(() => getDiskInfoSync()).toThrowError('Platform not supported: aix');
     });
 });

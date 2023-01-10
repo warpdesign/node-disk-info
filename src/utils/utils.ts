@@ -1,6 +1,8 @@
 import * as os from 'os';
-import {execSync} from 'child_process';
+import { promisify } from 'util';
+import { exec } from 'child_process';
 
+const execAsync = promisify(exec)
 /**
  * Class with utilitary methods.
  */
@@ -18,18 +20,20 @@ export class Utils {
     /**
      * Get chcp value (only for Win32 platform).
      *
-     * @return {string} Platform: win32.
+     * @return {Promise<string>} Platform: win32.
      */
-     public static chcp(): string {
-        return execSync('chcp', {windowsHide: true}).toString().split(':')[1].trim();
+     public static async chcp(): Promise<string> {
+        const { stdout } = await execAsync('chcp', {windowsHide: true})
+        return stdout.toString().split(':')[1].trim();
     }
 
     /**
      * Executes a command in SO console.
      *
-     * @param {Buffer} command: Command to execute.
+     * @param {Promise<Buffer>} command: Command to execute.
      */
-    public static execute(command: string): Buffer {
-        return execSync(command,{windowsHide: true, encoding: 'buffer'});
+    public static async execute(command: string): Promise<Buffer> {
+        const { stdout } = await execAsync(command,{windowsHide: true, encoding: 'buffer'});
+        return stdout
     }
 }
